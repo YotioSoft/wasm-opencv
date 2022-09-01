@@ -1,0 +1,49 @@
+<!-- from https://stackoverflow.com/questions/67190799/how-to-include-cv-imread-when-building-opencv-js -->
+
+<html>
+  <head>
+  </head>
+  <body>
+    <h1>Hello OpenCV.js</h1>
+    <div>
+      <div>
+        <canvas id="canvas"></canvas>
+      </div>
+      <div>
+        <input type="file" id="fileInput" name="file" />
+      </div>
+    </div>
+    <script>
+      var Module = {
+        onRuntimeInitialized: function() {
+          console.log(Module.imread)
+          const cv = Module;
+
+          let fileInput = document.getElementById('fileInput');
+
+          fileInput.onchange = (e) => {
+            const image = new Image();
+
+            image.src = URL.createObjectURL(e.target.files[0]);
+
+            image.onload = ()  => {
+              const canvas = document.getElementById('canvas');
+              const context = canvas.getContext('2d');
+
+              canvas.height = image.height;
+              canvas.width = image.width;
+
+              context.drawImage(image, 0, 0, image.width, image.height);
+              const imageData = context.getImageData(0, 0, image.width, image.height);
+
+              const cvImage = cv.imread("canvas");
+              const mean = cv.mean(cvImage)
+              console.log(`Mean: ${mean[0]}, ${mean[1]}, ${mean[2]}`)
+            }
+          };
+        }
+      };
+    </script>
+    <script src="opencv.js"></script>
+  </body>
+</html>
